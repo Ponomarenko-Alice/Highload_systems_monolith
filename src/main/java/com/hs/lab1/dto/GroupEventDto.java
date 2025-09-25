@@ -14,6 +14,7 @@ public record GroupEventDto (
         LocalTime startTime,
         LocalTime endTime,
         List<UserDto> participants,
+        Long ownerId,
         GroupEventStatus status
 )
 {}

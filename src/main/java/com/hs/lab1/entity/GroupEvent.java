@@ -16,8 +16,10 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "grop_events")
 public class GroupEvent {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank
@@ -40,6 +42,10 @@ public class GroupEvent {
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private List<User> participants;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @Enumerated(EnumType.STRING)
     private GroupEventStatus status;

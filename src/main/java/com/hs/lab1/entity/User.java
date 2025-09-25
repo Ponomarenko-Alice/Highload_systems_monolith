@@ -7,29 +7,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank()
+    @NotBlank
     @Size(max = 20)
     private String username;
 
-    @NotBlank()
+    @NotBlank
     @Size(max = 20)
     private String name;
 
-    @NotBlank()
+    @NotBlank
     @Size(max = 30)
     private String surname;
 
     @OneToMany(mappedBy = "owner")
-    private List<Event> events;
+    private List<Event> events = new ArrayList<>();
 }
