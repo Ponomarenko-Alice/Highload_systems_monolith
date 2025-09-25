@@ -1,4 +1,11 @@
 package com.hs.lab1.dto;
 
-public class UserDto {
-}
+import java.util.List;
+
+public record UserDto (
+        Long id,
+        String username,
+        String name,
+        String surname,
+        List<String> eventNames
+) {}
