@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,12 +24,11 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserDto> addUser(@Valid @RequestBody CreateUserRequest request) {
-        User user = userService.addUser(
-                request.username(),
-                request.name(),
-                request.surname());
+        User user = userService.addUser(request.username(), request.name(), request.surname());
         UserDto userDto = userMapper.toUserDto(user);
-        return ResponseEntity.ok(userDto);
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(userDto);
     }
 
     @GetMapping

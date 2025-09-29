@@ -8,6 +8,7 @@ import com.hs.lab1.requests.CreateGroupEventRequest;
 import com.hs.lab1.service.GroupEventService;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +34,9 @@ public class GroupEventController {
                 request.ownerId(),
                 request.status()
         );
-        return ResponseEntity.ok(groupEventMapper.toGroupEventDto(groupEvent));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(groupEventMapper.toGroupEventDto(groupEvent));
     }
 
     @GetMapping
