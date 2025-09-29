@@ -63,7 +63,7 @@ public class GroupEventController {
                 request.periodStart(),
                 request.periodEnd(),
                 request.duration(),
-                request.participantIds()
+                request.groupEventId()
         );
         return ResponseEntity.ok(timeslots);
     }

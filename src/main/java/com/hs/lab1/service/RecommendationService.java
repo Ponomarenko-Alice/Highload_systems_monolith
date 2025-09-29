@@ -4,6 +4,7 @@ import com.hs.lab1.dto.TimeInterval;
 import com.hs.lab1.dto.TimeSlot;
 import com.hs.lab1.entity.Event;
 import com.hs.lab1.entity.GroupEvent;
+import com.hs.lab1.entity.User;
 import com.hs.lab1.enums.GroupEventStatus;
 import com.hs.lab1.exceptions.EventNotFoundException;
 import com.hs.lab1.exceptions.NoAvailableSlotsException;
@@ -17,6 +18,7 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RecommendationService {
@@ -33,8 +35,14 @@ public class RecommendationService {
             LocalDate periodStart,
             LocalDate periodEnd,
             Duration duration,
-            List<Long> participantIds
+            Long groupEventId
     ) {
+        Optional<GroupEvent> optGroupEvent = groupEventRepository.findById(groupEventId);
+        if (optGroupEvent.isEmpty()) {
+            throw new EventNotFoundException("GroupEvent not found: " + groupEventId);
+        }
+
+        List<Long> participantIds = optGroupEvent.get().getParticipants().stream().map(User::getId).collect(Collectors.toList());
         List<Event> events = eventRepository.findBusyEventsForUsersBetweenDates(
                 participantIds, periodStart, periodEnd
         );
