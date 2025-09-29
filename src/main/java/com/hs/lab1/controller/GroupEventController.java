@@ -6,12 +6,12 @@ import com.hs.lab1.mapper.GroupEventMapper;
 import com.hs.lab1.mapper.UserMapper;
 import com.hs.lab1.requests.CreateGroupEventRequest;
 import com.hs.lab1.service.GroupEventService;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/groupEvent")
@@ -35,4 +35,24 @@ public class GroupEventController {
         );
         return ResponseEntity.ok(groupEventMapper.toGroupEventDto(groupEvent));
     }
+
+    @GetMapping
+    public ResponseEntity<List<GroupEventDto>> getAllGroupEvents() {
+        List<GroupEvent> groupEvents = groupEventService.getAllGroupEvents();
+        return ResponseEntity.ok(groupEventMapper.toGroupEventDtoList(groupEvents));
+    }
+
+    @GetMapping(path = "/{id}")
+    public ResponseEntity<GroupEventDto> getGroupEventById(@PathVariable @Min(1) Long id) {
+        GroupEvent groupEvent = groupEventService.getGroupEventById(id);
+        return ResponseEntity.ok(groupEventMapper.toGroupEventDto(groupEvent));
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public ResponseEntity<Void> deleteGroupEventById(@PathVariable @Min(1) Long id) {
+        groupEventService.deleteGroupEventById(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

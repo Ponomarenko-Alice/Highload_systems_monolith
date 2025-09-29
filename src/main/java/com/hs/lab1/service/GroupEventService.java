@@ -3,6 +3,7 @@ package com.hs.lab1.service;
 import com.hs.lab1.entity.GroupEvent;
 import com.hs.lab1.entity.User;
 import com.hs.lab1.enums.GroupEventStatus;
+import com.hs.lab1.exceptions.EventNotFoundException;
 import com.hs.lab1.exceptions.UserNotFoundException;
 import com.hs.lab1.mapper.GroupEventMapper;
 import com.hs.lab1.repository.GroupEventRepository;
@@ -55,4 +56,17 @@ public class GroupEventService {
 
         return groupEventRepository.save(groupEvent);
     }
+
+    public GroupEvent getGroupEventById(Long id) {
+        Optional<GroupEvent> groupEvent = groupEventRepository.findById(id);
+        if (groupEvent.isEmpty()) throw new EventNotFoundException("Group event with id = " + id + " not found");
+        return groupEvent.get();
+    }
+
+    public void deleteGroupEventById(Long id) {
+        Optional<GroupEvent> groupEvent = groupEventRepository.findById(id);
+        if (groupEvent.isEmpty()) throw new EventNotFoundException("Group event with id = " + id + " not found");
+        groupEventRepository.deleteById(id);
+    }
+
 }
