@@ -1,4 +1,4 @@
-package com.hs.lab1.mapperTests;
+package com.hs.lab1.dtoTests;
 
 import com.hs.lab1.dto.UserDto;
 import com.hs.lab1.entity.User;
