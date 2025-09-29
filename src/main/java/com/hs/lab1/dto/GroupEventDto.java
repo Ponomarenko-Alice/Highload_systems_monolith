@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-public record GroupEventDto (
+public record GroupEventDto(
         Long id,
         String name,
         String description,
@@ -16,5 +16,5 @@ public record GroupEventDto (
         List<UserDto> participants,
         Long ownerId,
         GroupEventStatus status
-)
-{}
+) {
+}

@@ -8,6 +8,7 @@ import com.hs.lab1.service.EventService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +30,9 @@ public class EventController {
                 request.startTime(),
                 request.endTime(),
                 request.ownerId());
-        return ResponseEntity.ok(eventMapper.toEventDto(event));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(eventMapper.toEventDto(event));
     }
 
     @GetMapping
