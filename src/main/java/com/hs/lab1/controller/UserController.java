@@ -9,6 +9,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +42,7 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toUserDtoList(users));
     }
 
-    @GetMapping(path = "/{id}")
+    @GetMapping(path = "/id/{id}")
     public ResponseEntity<UserDto> getUserById(@PathVariable @Min(1) Long id) {
         User user = userService.getUserById(id);
         return ResponseEntity.ok(userMapper.toUserDto(user));
@@ -49,9 +54,23 @@ public class UserController {
         return ResponseEntity.ok(userMapper.toUserDto(user));
     }
 
-    @DeleteMapping(path = "/{id}")
+    @DeleteMapping(path = "/id/{id}")
     public ResponseEntity<Void> deleteUserById(@PathVariable @Min(1) Long id) {
         userService.deleteUserById(id);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<Page<UserDto>> searchByUsername(
+            @RequestParam(name = "q", required = false) String q,
+            @PageableDefault(page = 0, size = 25, sort = "username", direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        int maxSize = Math.min(pageable.getPageSize(), 100);
+        Pageable safePageable = PageRequest.of(pageable.getPageNumber(), maxSize, pageable.getSort());
+
+        Page<User> users = userService.searchByUsername(q, safePageable);
+        Page<UserDto> dtoPage = users.map(userMapper::toUserDto);
+        return ResponseEntity.ok(dtoPage);
+    }
+
 }
