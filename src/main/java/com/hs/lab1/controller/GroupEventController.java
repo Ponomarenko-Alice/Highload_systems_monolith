@@ -1,10 +1,15 @@
 package com.hs.lab1.controller;
 
 import com.hs.lab1.dto.GroupEventDto;
+import com.hs.lab1.dto.TimeSlot;
 import com.hs.lab1.entity.GroupEvent;
 import com.hs.lab1.mapper.GroupEventMapper;
+import com.hs.lab1.requests.BookSlotRequest;
 import com.hs.lab1.requests.CreateGroupEventRequest;
+import com.hs.lab1.requests.RecommendSlotsRequest;
 import com.hs.lab1.service.GroupEventService;
+import com.hs.lab1.service.RecommendationService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +24,23 @@ import java.util.List;
 public class GroupEventController {
     private final GroupEventService groupEventService;
     private final GroupEventMapper groupEventMapper;
+    private final RecommendationService recommendationService;
 
     @PostMapping
     public ResponseEntity<GroupEventDto> addGroupEvent(@RequestBody CreateGroupEventRequest request) {
-        GroupEvent groupEvent = groupEventService.addGroupEvent(request.name(), request.description(), request.date(), request.startTime(), request.endTime(), request.participantIds(), request.ownerId(), request.status());
-        return ResponseEntity.status(HttpStatus.CREATED).body(groupEventMapper.toGroupEventDto(groupEvent));
+        GroupEvent groupEvent = groupEventService.addGroupEvent(
+                request.name(),
+                request.description(),
+                request.date(),
+                request.startTime(),
+                request.endTime(),
+                request.participantIds(),
+                request.ownerId(),
+                request.status()
+        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(groupEventMapper.toGroupEventDto(groupEvent));
     }
 
     @GetMapping
@@ -42,6 +59,26 @@ public class GroupEventController {
     public ResponseEntity<Void> deleteGroupEventById(@PathVariable @Min(1) Long id) {
         groupEventService.deleteGroupEventById(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping(path = "/recommend")
+    public ResponseEntity<List<TimeSlot>> recommendGroupEvents(@RequestBody RecommendSlotsRequest request) {
+        List<TimeSlot> timeslots = recommendationService.recommendSlots(
+                request.periodStart(),
+                request.periodEnd(),
+                request.duration(),
+                request.groupEventId()
+        );
+        return ResponseEntity.ok(timeslots);
+    }
+
+    @PostMapping(path = "/book")
+    public ResponseEntity<GroupEvent> bookGroupEvent(@Valid @RequestBody BookSlotRequest request) {
+        GroupEvent booked = recommendationService.bookSlot(
+                request.groupEventId(),
+                new TimeSlot(request.date(), request.startTime(), request.endTime())
+        );
+        return ResponseEntity.ok(booked);
     }
 
 
