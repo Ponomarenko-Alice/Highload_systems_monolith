@@ -31,12 +31,8 @@ public class GroupEventController {
         GroupEvent groupEvent = groupEventService.addGroupEvent(
                 request.name(),
                 request.description(),
-                request.date(),
-                request.startTime(),
-                request.endTime(),
                 request.participantIds(),
-                request.ownerId(),
-                request.status()
+                request.ownerId()
         );
         return ResponseEntity
                 .status(HttpStatus.CREATED)
